@@ -11,41 +11,85 @@ inline constexpr int is_leap(const int x) {
 	return (x % 4 == 0 && x % 100 != 0) || x % 400 == 0;
 }
 
+wstring fit_to_3(wstring x) {
+	while (x.size() < 3)
+		x = L" " + x;
+	return x;
+}
+
 void generate_calendar(int year, string filename, const wstring* months_names, const wstring* day_of_week) {
 	const locale utf8_locale = locale(locale(), new codecvt_utf8<wchar_t>());
 	wofstream fout(filename);
 	fout.imbue(utf8_locale);
 
-	string year_string = to_string(year);
+	int height = 4;
+	int width = 12 / height;
 
 	for (int i = 0; i < 5; i++) {
-		for (char c : year_string) {
+		for (int i = 0; i < 3 * 7 + 7; i++)
+			fout << L" ";
+		for (char c : to_string(year)) {
 			fout << big_digit[c - '0'][i] << L" ";
 		}
 		fout << L"\n";
 	}
-	fout << L"\n";
 
 	int day_now = 3;
 	for (int i = 1970; i < year; i++)
 		day_now = (day_now + 365 + is_leap(i)) % 7;
 	const int this_year_is_leap = is_leap(year);
 
-	for (int month = 0; month < 12; month++) {
-		fout << months_names[month] << L"\n";
-		for (int i = 0; i < 7; i++)
-			fout << L" " << day_of_week[i];
-		fout << L"\n";
-		int t = 1;
-		for (int i = 0; i < 3 * day_now; i++) fout << " ";
-		for (int i = 0; i < month_length[this_year_is_leap][month]; i++) {
-			fout << setw(3) << t;
-			t++;
-			day_now++;
-			day_now %= 7;
-			if (day_now == 0) fout << L"\n";
+	for (int row = 0; row < height; row++) {
+		wstring buffer[8];
+
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < 7; j++)
+				buffer[1] += L" " + day_of_week[j];
+			if (i + 1 < width)
+				buffer[1] += L"   ";
 		}
+
+		for (int month = row * width; month < (row + 1) * width; month++) {
+			buffer[0] += months_names[month];
+			if (month + 1 < (row + 1) * width)
+				buffer[0] += L"   ";
+
+			int line_now = 0;
+			int day = 1;
+			int symbols_added = 0;
+
+			for (int i = 0; i < 3 * day_now; i++) {
+				buffer[line_now + 2] += L" ";
+				symbols_added++;
+			}
+
+			while (line_now < 6) {
+				while (day <= month_length[this_year_is_leap][month]) {
+					buffer[line_now + 2] += fit_to_3(to_wstring(day));
+					day++;
+					day_now++;
+					symbols_added += 3;
+					day_now %= 7;
+					if (day_now == 0)
+						break;
+				}
+				while (symbols_added < 3 * 7) {
+					buffer[line_now + 2] += L" ";
+					symbols_added++;
+				}
+				if (month + 1 < (row + 1) * width)
+					buffer[line_now + 2] += L"   ";
+				line_now++;
+				symbols_added = 0;
+			}
+
+		}
+
+		for (int i = 0; i < 3 * 7 * width + 3 * (width - 1); i++)
+			fout << L" ";
 		fout << L"\n";
+		for (auto& o : buffer)
+			fout << o << L"\n";
 	}
 
 	fout.close();
