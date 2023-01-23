@@ -2,30 +2,32 @@
 #include <string>
 #include <iomanip>
 #include <fstream>
+#include <locale>
+#include <codecvt>
 using namespace std;
 
-const string months_names[]
-{ "January","February",
-"March","April","May",
-"June","July","August",
-"September","October","November",
-"December" };
+const wstring months_names[]
+{ L"January",L"February",
+L"March",L"April",L"May",
+L"June",L"July",L"August",
+L"September",L"October",L"November",
+L"December" };
 
-const string months_names_ru[]
-{ "Январь","Февраль",
-"Март","Апрель","Май",
-"Июнь","Июль","Август",
-"Сентябрь","Октябрь","Ноябрь",
-"Декабрь" };
+const wstring months_names_ru[]
+{ L"Январь",L"Февраль",
+L"Март",L"Апрель",L"Май",
+L"Июнь",L"Июль",L"Август",
+L"Сентябрь",L"Октябрь",L"Ноябрь",
+L"Декабрь" };
 
-const string day_of_week[]
+const wstring day_of_week[]
 {
-	"MO","TU","WE","TH","FR","SA","SU"
+	L"MO",L"TU",L"WE",L"TH",L"FR",L"SA",L"SU"
 };
 
-const string day_of_week_ru[]
+const wstring day_of_week_ru[]
 {
-	"ПН","ВТ","СР","ЧТ","ПТ","СБ","ВС"
+	L"ПН",L"ВТ",L"СР",L"ЧТ",L"ПТ",L"СБ",L"ВС"
 };
 
 const int month_length[2][12]{
@@ -33,66 +35,66 @@ const int month_length[2][12]{
 	{31,29,31,30,31,30,31,31,30,31,30,31}
 };
 
-const string big_digit[10][5]{
-	{"###",
-	 "# #",
-	 "# #",
-	 "# #",
-	 "###"},
+const wstring big_digit[10][5]{
+	{L"###",
+	 L"# #",
+	 L"# #",
+	 L"# #",
+	 L"###"},
 
-	{" # ",
-	 "## ",
-	 " # ",
-	 " # ",
-	 "###"},
-
-	{"###",
-	 "  #",
-	 "###",
-	 "#  ",
-	 "###"},
-
-	{"###",
-	 "  #",
-	 "###",
-	 "  #",
-	 "###"},
-
-	{"# #",
-	 "# #",
-	 "###",
-	 "  #",
-	 "  #"},
-
-	{"###",
-	 "#  ",
-	 "###",
-	 "  #",
-	 "###"},
-
-	{"###",
-	 "#  ",
-	 "###",
-	 "# #",
-	 "###"},
-
-	{"###",
-	 "  #",
-	 "  #",
-	 "  #",
-	 "  #"},
-
-	{"###",
-	 "# #",
-	 "###",
-	 "# #",
-	 "###"},
-
-	{"###",
-	 "# #",
-	 "###",
-	 "  #",
-	 "###"}
+	{L" # ",
+	 L"## ",
+	 L" # ",
+	 L" # ",
+	 L"###"},
+	 
+	{L"###",
+	 L"  #",
+	 L"###",
+	 L"#  ",
+	 L"###"},
+	 
+	{L"###",
+	 L"  #",
+	 L"###",
+	 L"  #",
+	 L"###"},
+	 
+	{L"# #",
+	 L"# #",
+	 L"###",
+	 L"  #",
+	 L"  #"},
+	 
+	{L"###",
+	 L"#  ",
+	 L"###",
+	 L"  #",
+	 L"###"},
+	 
+	{L"###",
+	 L"#  ",
+	 L"###",
+	 L"# #",
+	 L"###"},
+	 
+	{L"###",
+	 L"  #",
+	 L"  #",
+	 L"  #",
+	 L"  #"},
+	 
+	{L"###",
+	 L"# #",
+	 L"###",
+	 L"# #",
+	 L"###"},
+	 
+	{L"###",
+	 L"# #",
+	 L"###",
+	 L"  #",
+	 L"###"}
 };
 
 inline constexpr int is_leap(const int x) {
@@ -111,25 +113,28 @@ int main() {
 	
 	string year_string = to_string(this_year);
 	string filename = "calendar_" + year_string + ".txt";
-	ofstream fout(filename);
+
+	const locale utf8_locale = locale(locale(), new codecvt_utf8<wchar_t>());
+	wofstream fout(filename);
+	fout.imbue(utf8_locale);
 
 	for (int i = 0; i < 5; i++) {
 		for (char c : year_string) {
-			fout << big_digit[c - '0'][i] << " ";
+			fout << big_digit[c - '0'][i] << L" ";
 		}
-		fout << "\n";
+		fout << L"\n";
 	}
-	fout << "\n";
+	fout << L"\n";
 
 	int day_now = 3;
 	for (int year = 1970; year < this_year; year++)
 		day_now = (day_now + 365 + is_leap(year)) % 7;
 	const int this_year_is_leap = is_leap(this_year);
 	for (int month = 0; month < 12; month++) {
-		fout << months_names_ru[month] << "\n";
+		fout << months_names_ru[month] << L"\n";
 		for (int i = 0; i < 7; i++)
-			fout << " " << day_of_week_ru[i];
-		fout << "\n";
+			fout << L" " << day_of_week_ru[i];
+		fout << L"\n";
 		int t = 1;
 		for (int i = 0; i < 3 * day_now; i++) fout << " ";
 		for (int i = 0; i < month_length[this_year_is_leap][month]; i++) {
@@ -137,9 +142,9 @@ int main() {
 			t++;
 			day_now++;
 			day_now %= 7;
-			if (day_now == 0) fout << "\n";
+			if (day_now == 0) fout << L"\n";
 		}
-		fout << "\n";
+		fout << L"\n";
 	}
 
 	fout.close();
