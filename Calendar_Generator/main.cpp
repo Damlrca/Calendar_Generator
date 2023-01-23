@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <iomanip>
 using namespace std;
@@ -20,6 +20,68 @@ const int month_length[2][12]{
 	{31,29,31,30,31,30,31,31,30,31,30,31}
 };
 
+const string big_digit[10][5]{
+	{"###",
+	 "# #",
+	 "# #",
+	 "# #",
+	 "###"},
+
+	{" # ",
+	 "## ",
+	 " # ",
+	 " # ",
+	 "###"},
+
+	{"###",
+	 "  #",
+	 "###",
+	 "#  ",
+	 "###"},
+
+	{"###",
+	 "  #",
+	 "###",
+	 "  #",
+	 "###"},
+
+	{"# #",
+	 "# #",
+	 "###",
+	 "  #",
+	 "  #"},
+
+	{"###",
+	 "#  ",
+	 "###",
+	 "  #",
+	 "###"},
+
+	{"###",
+	 "#  ",
+	 "###",
+	 "# #",
+	 "###"},
+
+	{"###",
+	 "  #",
+	 "  #",
+	 "  #",
+	 "  #"},
+
+	{"###",
+	 "# #",
+	 "###",
+	 "# #",
+	 "###"},
+
+	{"###",
+	 "# #",
+	 "###",
+	 "  #",
+	 "###"}
+};
+
 inline constexpr int is_leap(const int x) {
 	return (x % 4 == 0 && x % 100 != 0) || x % 400 == 0;
 }
@@ -32,11 +94,21 @@ int main() {
 		cout << "expected 1970 - 3000";
 		return 0;
 	}
+
+	string s = to_string(this_year);
+	cout << "\n";
+	for (int i = 0; i < 5; i++) {
+		for (char c : s) {
+			cout << big_digit[c - '0'][i] << " ";
+		}
+		cout << "\n";
+	}
+	cout << "\n";
+
 	int day_now = 3;
 	for (int year = 1970; year < this_year; year++)
 		day_now = (day_now + 365 + is_leap(year)) % 7;
 	const int this_year_is_leap = is_leap(this_year);
-	cout << this_year << "\n";
 	for (int month = 0; month < 12; month++) {
 		cout << months_names[month] << "\n";
 		int t = 1;
