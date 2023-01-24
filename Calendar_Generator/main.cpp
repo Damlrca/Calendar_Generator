@@ -11,27 +11,32 @@ inline constexpr int is_leap(const int x) {
 	return (x % 4 == 0 && x % 100 != 0) || x % 400 == 0;
 }
 
-wstring fit_to_3(wstring x) {
-	while (x.size() < 3)
-		x = L" " + x;
-	return x;
+wstring fit_to_center(wstring x, size_t width) {
+	size_t need = max(size_t(0), width - x.size());
+	size_t right = need / 2;
+	size_t left = need - right;
+	return wstring(left, L' ') + x + wstring(right, L' ');
 }
 
-void generate_calendar(int year, string filename, const wstring* months_names, const wstring* day_of_week) {
+wstring fit_to_right(wstring x, size_t width) {
+	return wstring(max(size_t(0), width - x.size()), L' ') + x;
+}
+
+void generate_calendar(int year, string filename, const wstring* months_names, const wstring* day_of_week, int height) {
 	const locale utf8_locale = locale(locale(), new codecvt_utf8<wchar_t>());
 	wofstream fout(filename);
 	fout.imbue(utf8_locale);
 
-	int height = 4;
+	//int height = 4;
 	int width = 12 / height;
 
+	int width_in_symbols = 3 * 7 * width + 3 * (width - 1);
+
 	for (int i = 0; i < 5; i++) {
-		for (int i = 0; i < 3 * 7 + 7; i++)
-			fout << L" ";
-		for (char c : to_string(year)) {
-			fout << big_digit[c - '0'][i] << L" ";
-		}
-		fout << L"\n";
+		wstring t;
+		for (char c : to_string(year))
+			t += big_digit[c - '0'][i] + L" ";
+		fout << fit_to_center(t, width_in_symbols) << L"\n";
 	}
 
 	int day_now = 3;
@@ -44,13 +49,13 @@ void generate_calendar(int year, string filename, const wstring* months_names, c
 
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < 7; j++)
-				buffer[1] += L" " + day_of_week[j];
+				buffer[1] += fit_to_right(day_of_week[j], 3);
 			if (i + 1 < width)
 				buffer[1] += L"   ";
 		}
 
 		for (int month = row * width; month < (row + 1) * width; month++) {
-			buffer[0] += months_names[month];
+			buffer[0] += L' ' + fit_to_center(months_names[month], 20);
 			if (month + 1 < (row + 1) * width)
 				buffer[0] += L"   ";
 
@@ -65,7 +70,7 @@ void generate_calendar(int year, string filename, const wstring* months_names, c
 
 			while (line_now < 6) {
 				while (day <= month_length[this_year_is_leap][month]) {
-					buffer[line_now + 2] += fit_to_3(to_wstring(day));
+					buffer[line_now + 2] += fit_to_right(to_wstring(day), 3);
 					day++;
 					day_now++;
 					symbols_added += 3;
@@ -85,8 +90,8 @@ void generate_calendar(int year, string filename, const wstring* months_names, c
 
 		}
 
-		for (int i = 0; i < 3 * 7 * width + 3 * (width - 1); i++)
-			fout << L" ";
+		fout << wstring(width_in_symbols, L' ');
+
 		fout << L"\n";
 		for (auto& o : buffer)
 			fout << o << L"\n";
@@ -100,7 +105,7 @@ int main() {
 	cout << "Input year (1970-3000): ";
 	cin >> this_year;
 	if (this_year < 1970 || this_year > 3000) {
-		cout << "expected 1970 - 3000";
+		cout << "Error: expected 1970 - 3000\n";
 		return 0;
 	}
 	
@@ -108,7 +113,15 @@ int main() {
 	cout << "Language (eng/rus): ";
 	cin >> lang;
 	if (lang != "eng" && lang != "rus") {
-		cout << "expected \"eng\" or \"rus\"\n";
+		cout << "Error: expected \"eng\" or \"rus\"\n";
+		return 0;
+	}
+
+	int height;
+	cout << "Input number of rows(1, 2, 3, 4, 6, 12): ";
+	cin >> height;
+	if (height <= 0 || 12 % height != 0) {
+		cout << "Error: expected another number of rows\n";
 		return 0;
 	}
 
@@ -116,12 +129,12 @@ int main() {
 	string filename = "calendar_" + year_string;
 
 	if (lang == "eng") {
-		filename += "_eng.txt";
-		generate_calendar(this_year, filename, months_names, day_of_week);
+		filename += "_eng" + to_string(height) + "x" + to_string(12 / height) + ".txt";
+		generate_calendar(this_year, filename, months_names, day_of_week, height);
 	}
 	else if (lang == "rus") {
-		filename += "_rus.txt";
-		generate_calendar(this_year, filename, months_names_ru, day_of_week_ru);
+		filename += "_rus" + to_string(height) + "x" + to_string(12 / height) + ".txt";
+		generate_calendar(this_year, filename, months_names_ru, day_of_week_ru, height);
 	}
 	else {
 		cout << "expected \"eng\" or \"rus\"\n";
