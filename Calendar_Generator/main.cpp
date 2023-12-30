@@ -22,15 +22,14 @@ wstring fit_to_right(wstring x, size_t width) {
 	return wstring(max(size_t(0), width - x.size()), L' ') + x;
 }
 
-void generate_calendar(int year, string filename, const wstring* months_names, const wstring* day_of_week, int height) {
+void generate_calendar(const int year, string filename, const wstring* months_names, const wstring* day_of_week, const int height) {
 	const locale utf8_locale = locale(locale(), new codecvt_utf8<wchar_t>());
 	wofstream fout(filename);
 	fout.imbue(utf8_locale);
 
-	//int height = 4;
-	int width = 12 / height;
+	const int width = 12 / height;
 
-	int width_in_symbols = 3 * 7 * width + 3 * (width - 1);
+	const int width_in_symbols = 3 * 7 * width + 3 * (width - 1);
 
 	for (int i = 0; i < 5; i++) {
 		wstring t;
@@ -105,43 +104,43 @@ int main() {
 	cout << "Input year (1970-3000): ";
 	cin >> this_year;
 	if (this_year < 1970 || this_year > 3000) {
-		cout << "Error: expected 1970 - 3000\n";
-		return 0;
+		cout << "Error: expected 1970 - 3000" << endl;
+		return -1;
 	}
 	
 	string lang;
 	cout << "Language (eng/rus): ";
 	cin >> lang;
 	if (lang != "eng" && lang != "rus") {
-		cout << "Error: expected \"eng\" or \"rus\"\n";
-		return 0;
+		cout << "Error: expected \"eng\" or \"rus\"" << endl;
+		return -1;
 	}
 
 	int height;
-	cout << "Input number of rows(1, 2, 3, 4, 6, 12): ";
+	cout << "Input number of rows (1/2/3/4/6/12): ";
 	cin >> height;
 	if (height <= 0 || 12 % height != 0) {
-		cout << "Error: expected another number of rows\n";
-		return 0;
+		cout << "Error: expected another number of rows" << endl;
+		return -1;
 	}
 
 	string year_string = to_string(this_year);
-	string filename = "calendar_" + year_string;
+	string filename = "c_" + year_string;
 
 	if (lang == "eng") {
-		filename += "_eng" + to_string(height) + "x" + to_string(12 / height) + ".txt";
+		filename += "_" + lang + "_" + to_string(height) + "x" + to_string(12 / height) + ".txt";
 		generate_calendar(this_year, filename, months_names, day_of_week, height);
 	}
 	else if (lang == "rus") {
-		filename += "_rus" + to_string(height) + "x" + to_string(12 / height) + ".txt";
+		filename += "_" + lang + "_" + to_string(height) + "x" + to_string(12 / height) + ".txt";
 		generate_calendar(this_year, filename, months_names_ru, day_of_week_ru, height);
 	}
 	else {
-		cout << "expected \"eng\" or \"rus\"\n";
-		return 0;
+		cout << "expected \"eng\" or \"rus\"" << endl;
+		return -1;
 	}
 
-	cout << "calendar saved in file " << filename << "\n";
+	cout << "calendar saved in file " << filename << endl;
 
 	return 0;
 }
