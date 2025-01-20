@@ -72,7 +72,7 @@ wstring_block generate_calendar(int year, int H, LANG lang, const title_number_f
                 row = merge_hor(row, bl, 4, HOR_ALIGH::UP);
             }
         }
-        res = merge_ver(res, row, 1, VER_ALIGH::MID_L);
+        res = merge_ver(res, row, 1, VER_ALIGH::MID_R);
     }
-    return wstring_block(0, 0);
+    return res;
 }
