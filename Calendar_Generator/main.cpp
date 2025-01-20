@@ -5,11 +5,9 @@
 #include <fstream>
 #include <locale>
 #include <codecvt>
-using namespace std;
+#include "generator.h"
 
-inline constexpr int is_leap(const int x) {
-    return (x % 4 == 0 && x % 100 != 0) || x % 400 == 0;
-}
+using namespace std;
 
 wstring fit_to_center(wstring x, size_t width) {
     size_t need = max(size_t(0), width - x.size());
