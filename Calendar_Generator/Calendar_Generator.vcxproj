@@ -139,10 +139,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="calendar_constants.cpp" />
+    <ClCompile Include="generator.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="wstring_block.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="calendar_constants.h" />
+    <ClInclude Include="generator.h" />
+    <ClInclude Include="title_number_font.h" />
+    <ClInclude Include="wstring_block.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
