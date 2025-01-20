@@ -29,64 +29,74 @@ extern const int month_length[2][12]{
     {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
 };
 
-extern const std::wstring big_digit[10][5]{
-    {L"███",
+extern std::vector<wstring_block> big_digit{
+    wstring_block(std::vector<std::wstring>{
+     L"███",
      L"█ █",
      L"█ █",
      L"█ █",
-     L"███"},
+     L"███"}),
 
-    {L" █ ",
+    wstring_block(std::vector<std::wstring>{
+     L" █ ",
      L"██ ",
      L" █ ",
      L" █ ",
-     L"███"},
+     L"███"}),
 
-    {L"███",
+    wstring_block(std::vector<std::wstring>{
+     L"███",
      L"  █",
      L"███",
      L"█  ",
-     L"███"},
+     L"███"}),
 
-    {L"███",
+    wstring_block(std::vector<std::wstring>{
+     L"███",
      L"  █",
      L"███",
      L"  █",
-     L"███"},
+     L"███"}),
 
-    {L"█ █",
+    wstring_block(std::vector<std::wstring>{
+     L"█ █",
      L"█ █",
      L"███",
      L"  █",
-     L"  █"},
+     L"  █"}),
 
-    {L"███",
+    wstring_block(std::vector<std::wstring>{
+     L"███",
      L"█  ",
      L"███",
      L"  █",
-     L"███"},
+     L"███"}),
 
-    {L"███",
+    wstring_block(std::vector<std::wstring>{
+     L"███",
      L"█  ",
      L"███",
      L"█ █",
-     L"███"},
+     L"███"}),
 
-    {L"███",
+    wstring_block(std::vector<std::wstring>{
+     L"███",
      L"  █",
      L"  █",
      L"  █",
-     L"  █"},
+     L"  █"}),
 
-    {L"███",
+    wstring_block(std::vector<std::wstring>{
+     L"███",
      L"█ █",
      L"███",
      L"█ █",
-     L"███"},
+     L"███"}),
 
-    {L"███",
+    wstring_block(std::vector<std::wstring>{
+     L"███",
      L"█ █",
      L"███",
      L"  █",
-     L"███"}
+     L"███"})
 };

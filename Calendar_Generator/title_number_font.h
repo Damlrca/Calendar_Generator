@@ -16,8 +16,15 @@ public:
         assert(_dig.size() == 10);
     }
     wstring_block gen(int year) const {
-        // TODO
-        return wstring_block(0, 0);
+        int a = year / 1000 % 10;
+        int b = year / 100 % 10;
+        int c = year / 10 % 10;
+        int d = year % 10;
+        wstring_block res = digits[a];
+        res = merge_hor(res, digits[b], space, hor_align);
+        res = merge_hor(res, digits[c], space, hor_align);
+        res = merge_hor(res, digits[d], space, hor_align);
+        return res;
     }
 };
 

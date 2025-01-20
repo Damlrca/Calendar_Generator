@@ -34,7 +34,7 @@ void generate_calendar(const int year, string filename, const std::vector<std::w
     for (int i = 0; i < 5; i++) {
         wstring t;
         for (char c : to_string(year))
-            t += big_digit[c - '0'][i] + L" ";
+            t += big_digit[c - '0'].get_block()[i] + L" ";
         fout << fit_to_center(t, width_in_symbols) << L"\n";
     }
 
