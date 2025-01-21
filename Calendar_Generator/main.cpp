@@ -55,12 +55,26 @@ int main() {
         return -1;
     }
 
+    title_number_font t_font[4]{
+        title_number_font(font_3x5, 1, HOR_ALIGH::DOWN),
+        title_number_font(font_ANSI_Regular, 1, HOR_ALIGH::DOWN),
+        title_number_font(font_ANSI_Shadow, 1, HOR_ALIGH::DOWN),
+        title_number_font(font_Fraktur, 1, HOR_ALIGH::DOWN)
+    };
+
+    int font_number;
+    cout << "Input font_number (0/1/2/3): ";
+    cin >> font_number;
+    if (font_number < 0 || font_number > 3) {
+        cout << "Error: expected another font_number" << endl;
+        return -1;
+    }
+
     string year_string = to_string(year);
     string filename = "c_" + year_string;
     filename += "_" + lang_str + "_" + to_string(H) + "x" + to_string(12 / H) + ".txt";
 
-    title_number_font t_font(big_digit, 1, HOR_ALIGH::DOWN);
-    write_calendar(filename, year, H, lang, t_font);
+    write_calendar(filename, year, H, lang, t_font[font_number]);
 
     cout << "calendar saved in file " << filename << endl;
 
